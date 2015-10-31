@@ -5,13 +5,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+
+
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 	int x;
 	int y;
-	
+
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -23,9 +28,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
 
 	public void update(){
-		x=x+1;
+		x=x+5;
 		if((x%100 != 0)){
-			y++;
+			y=y+5;
 
 		}
 		if(x%1600 == 0){
@@ -36,7 +41,6 @@ public class MyGdxGame extends ApplicationAdapter {
 			y = 0;
 
 		}
-
 
 	}
 
