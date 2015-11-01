@@ -117,7 +117,7 @@ public class Drop extends ApplicationAdapter {
         Iterator<Rectangle> iter = raindrops.iterator();
         while(iter.hasNext()) {
             Rectangle raindrop = iter.next();
-            raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
+            raindrop.y -= 500 * Gdx.graphics.getDeltaTime();
             if(raindrop.y + 64 < 0) iter.remove();
             if(raindrop.overlaps(bucket)) {
                 dropSound.play();
