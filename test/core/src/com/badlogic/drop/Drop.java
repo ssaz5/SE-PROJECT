@@ -17,6 +17,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+
+
+
+
 public class Drop extends ApplicationAdapter {
     private Texture dropImage;
     private Texture bucketImage;
@@ -27,13 +31,14 @@ public class Drop extends ApplicationAdapter {
     private Rectangle bucket;
     private Array<Rectangle> raindrops;
     private long lastDropTime;
+    private Texture badLogic;
 
     @Override
     public void create() {
         // load the images for the droplet and the bucket, 64x64 pixels each
         dropImage = new Texture(Gdx.files.internal("droplet.png"));
         bucketImage = new Texture(Gdx.files.internal("bucket.png"));
-
+        badLogic = new Texture(Gdx.files.internal("badlogic.jpg"));
         // load the drop sound effect and the rain background "music"
         dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
         rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
@@ -92,6 +97,7 @@ public class Drop extends ApplicationAdapter {
         for(Rectangle raindrop: raindrops) {
             batch.draw(dropImage, raindrop.x, raindrop.y);
         }
+
         batch.end();
 
         // process user input
@@ -100,6 +106,7 @@ public class Drop extends ApplicationAdapter {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
             bucket.x = touchPos.x - 64 / 2;
+
         }
         //if(Gdx.input.isKeyPressed(Keys.LEFT)) bucket.x -= 200 * Gdx.graphics.getDeltaTime();
         //if(Gdx.input.isKeyPressed(Keys.RIGHT)) bucket.x += 200 * Gdx.graphics.getDeltaTime();
