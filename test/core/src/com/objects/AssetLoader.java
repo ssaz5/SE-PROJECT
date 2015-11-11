@@ -82,7 +82,7 @@ public class AssetLoader {
 
     public static void load () {
         background = loadTexture("Main screen/Dome_City-01.jpg");
-        backgroundRegion = new TextureRegion(background);
+        backgroundRegion = new TextureRegion(background,0,0,4000,4000);
         burnBush = loadTexture("Bushes/1-09-09.jpg");
         burnBushRegion = new TextureRegion(burnBush);
         bush_one = loadTexture("Bushes/22-09.jpg");
