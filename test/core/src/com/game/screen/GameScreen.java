@@ -6,12 +6,20 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
+import com.objects.*;
+import com.objects.Object;
 
 /**
  * Created by Suleman on 11/8/2015.
@@ -26,6 +34,11 @@ public class GameScreen implements Screen{
     Box2DDebugRenderer renderer;
     OrthographicCamera camera;
 
+    AssetLoader Assets;
+
+    SpriteBatch sb;
+
+    Object spaceship;
 
     public GameScreen(Game game){
         this.game = game;
@@ -38,16 +51,43 @@ public class GameScreen implements Screen{
         renderer = new Box2DDebugRenderer();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
+        sb = new SpriteBatch();
+        spaceship = new AnimatedObject("ship action2/Spaceship.png",1,3,500,500);
+
 
         BodyDef staticBodyDef = new BodyDef();
-        staticBodyDef.position.set(0,-720);
+        staticBodyDef.position.set(0, -720);
 
 
         Body staticBody = world.createBody(staticBodyDef);
         PolygonShape ground = new PolygonShape();
-        ground.setAsBox(camera.viewportWidth, 2 );
-        staticBody.createFixture(ground, 0.0f);
+        ground.setAsBox(camera.viewportWidth, 2);
+        staticBody.createFixture(ground, 1.0f);
         ground.dispose();
+//
+//        BodyDef dynamicBodyDef = new BodyDef();
+//        dynamicBodyDef.type = BodyDef.BodyType.DynamicBody;
+//        //dynamicBodyDef.position.set(spaceship.rect.x,spaceship.rect.y);
+//        dynamicBodyDef.position.set(0,720);
+//        Body dynamicBody = world.createBody(dynamicBodyDef);
+//        CircleShape shape = new CircleShape();
+//        shape.setRadius(((spaceship.rect.height>spaceship.rect.width)?spaceship.rect.width:spaceship.rect.height)/2);
+//        FixtureDef dynamicFixtureDef = new FixtureDef();
+//        dynamicFixtureDef.shape = shape;
+//        dynamicFixtureDef.density = 0.5f;
+//        dynamicFixtureDef.friction = 0.4f;
+//        dynamicFixtureDef.restitution = 1f;
+//
+//
+//
+//        Fixture dynamicFixture = dynamicBody.createFixture(dynamicFixtureDef);
+//        shape.dispose();
+//
+//        dynamicBody.setUserData(spaceship);
+        spaceship.setBodyDynamic(world,0.3f,0.4f,0.5f);
+
+
+
     }
 
     @Override
@@ -63,10 +103,29 @@ public class GameScreen implements Screen{
             game.setScreen(new MenuScreen(game));
 
         }
+        Array<Body> bodies = new Array<Body>();
+        world.getBodies(bodies);
+
+        for (Body b : bodies) {
+            AnimatedObject e = (AnimatedObject) b.getUserData();
+
+            if (e != null) {
+                // Update the entities/sprites position and angle
+                e.setPosition(b.getPosition().x, b.getPosition().y);
+                // We need to convert our angle from radians to degrees
+                e.setRotation(MathUtils.radiansToDegrees * b.getAngle());
+            }
+
+        }
+
+        sb.begin();
+        sb.setProjectionMatrix(camera.combined);
+        spaceship.draw(sb);
+        sb.end();
 
         camera.update();
         world.step(1 / 60f, 6, 2);
-        renderer.render(world, camera.combined);
+        //renderer.render(world, camera.combined);
 
     }
 
