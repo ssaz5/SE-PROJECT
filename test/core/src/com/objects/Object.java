@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -27,7 +29,7 @@ public class Object {
     Texture texture;
     TextureRegion[] textureRegion;
     public Rectangle rect;
-    float rotation;
+    float rotation =0;
 
     TextureRegion currentFrame;
 
@@ -36,6 +38,8 @@ public class Object {
 
     float actualWidth;
     float actualHeight;
+
+    public Body body;
 
 
     public Object(){
@@ -69,12 +73,17 @@ public class Object {
         scaleX = rect.width*100/actualWidth;
         scaleY= rect.height*100/actualHeight;
         currentFrame = textureRegion[0];
+
+        body = null;
     }
 
-    public Object(Texture t, int row, int col, float x, float y ){
+    public Object(Texture t, int row, int col, float x, float y, float width, float height ){
+
+
+
         columns = col;
         rows = row;
-
+        rect = new Rectangle();
         texture = t;
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth()/columns, texture.getHeight()/rows);
         textureRegion = new TextureRegion[rows*columns];
@@ -87,10 +96,17 @@ public class Object {
         }
         rect.x = x;
         rect.y = y;
-        rect.width = texture.getWidth()/columns;
-        rect.height= texture.getHeight()/rows;
+        rect.width = width;
+        rect.height= height;
+
+        actualWidth = texture.getWidth()/columns;
+        actualHeight = (texture.getHeight()/rows);
+
+        scaleX = rect.width*100/actualWidth;
+        scaleY= rect.height*100/actualHeight;
         currentFrame = textureRegion[0];
 
+        body = null;
     }
 
 
@@ -121,15 +137,18 @@ public class Object {
 
     public Body setBodyStatic(World world, float density){
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(rect.x-rect.width/2,rect.y-rect.height/2);
+        bodyDef.position.set(rect.x,rect.y);
 
-        Body body = world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
 
         PolygonShape sShape = new PolygonShape();
-        sShape.setAsBox(rect.width/2, rect.height/2, new Vector2(rect.width/2, rect.height/2),0f);
+        sShape.setAsBox(rect.width/2, rect.height/2, new Vector2(0,0), 0);
 
-        body.createFixture(sShape,density);
+
+        body.createFixture(sShape, density);
         sShape.dispose();
+
+        body.setUserData(this);
         return body;
     }
 
@@ -137,12 +156,12 @@ public class Object {
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(rect.x-rect.width/2,rect.y-rect.height/2);
+        bodyDef.position.set(rect.x,rect.y);
 
-        Body body = world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
 
         PolygonShape dShape = new PolygonShape();
-        dShape.setAsBox(rect.width/2, rect.height/2, new Vector2(0, 0),0f);
+        dShape.setAsBox(rect.width/2, rect.height/2, new Vector2(0,0),0);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = dShape;
         fixtureDef.friction = friction;
@@ -159,10 +178,6 @@ public class Object {
 
 
     }
-
-
-
-
 
 }
 

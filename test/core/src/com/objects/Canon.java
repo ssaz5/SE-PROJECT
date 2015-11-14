@@ -2,37 +2,25 @@ package com.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
-import java.util.logging.Logger;
-import java.util.logging.LoggingMXBean;
-
-import sun.rmi.runtime.Log;
-
 /**
- * Created by Suleman on 11/11/2015.
+ * Created by Suleman on 11/14/2015.
  */
-public class AnimatedObject extends Object {
+public class Canon extends Object {
 
-    Animation animation;
+    int fuel;
 
-
-    float stateTime;
-
-    public AnimatedObject(String fileLoc, int row, int col, float x, float y, float width, float height ){
-
-        body = null;
-
+    public Canon(String fileLoc, int row, int col, float x, float y , float width, float height){
+        fuel = 4;
         columns = col;
         rows = row;
         rect = new Rectangle();
         texture = new Texture(Gdx.files.internal(fileLoc));
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth()/columns, texture.getHeight()/rows);
         textureRegion = new TextureRegion[rows*columns];
-
         int index=0;
         for (int i =0; i < rows; i++){
             for (int j=0; j<columns;j++){
@@ -50,25 +38,19 @@ public class AnimatedObject extends Object {
 
         scaleX = rect.width*100/actualWidth;
         scaleY= rect.height*100/actualHeight;
+        currentFrame = textureRegion[0];
 
-        stateTime = 0f;
-
-        animation = new Animation(0.25f,textureRegion);
-
-
-
+        body = null;
     }
 
-    public AnimatedObject(Texture texture, int row, int col, float x, float y, float width, float height ){
-        body = null;
-
+    public Canon(Texture t, int row, int col, float x, float y, float width, float height ){
+        fuel = 4;
         columns = col;
         rows = row;
         rect = new Rectangle();
-        this.texture = texture;
+        texture = t;
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth()/columns, texture.getHeight()/rows);
         textureRegion = new TextureRegion[rows*columns];
-
         int index=0;
         for (int i =0; i < rows; i++){
             for (int j=0; j<columns;j++){
@@ -86,25 +68,34 @@ public class AnimatedObject extends Object {
 
         scaleX = rect.width*100/actualWidth;
         scaleY= rect.height*100/actualHeight;
+        currentFrame = textureRegion[0];
 
-        stateTime = 0f;
+        body = null;
+    }
 
-        animation = new Animation(0.25f,textureRegion);
+    public void increaseFuel(){
+        fuel++;
+    }
+    public void decreaseFuel(){
+        fuel--;
+    }
 
-
-
+    public void changeAngle(boolean isup){
+        //use gesture and change angle of the body(box2d)
 
     }
 
+    public void fire(){
+        //Generate a shot
+    }
 
     @Override
     public void draw(SpriteBatch spriteBatch){
-        stateTime += Gdx.graphics.getDeltaTime();
-        currentFrame = animation.getKeyFrame(stateTime, true);
-        //spriteBatch.draw(currentFrame,(rect.x-rect.width/2)*100, (rect.y-rect.height/2)*100,(texture.getWidth()/columns)/2, (texture.getHeight()/rows)/2, texture.getWidth()/columns, texture.getHeight()/rows,scaleX,scaleY,rotation);
-        spriteBatch.draw(currentFrame,(rect.x*100-actualWidth/2), (rect.y*100-actualHeight/2),actualWidth/2, actualHeight/2, actualWidth, actualHeight,scaleX,scaleY,rotation);
-        //spriteBatch.draw(currentFrame, rect.x, rect.y,rect.x, rect.y, rect.width, rect.height,1,1,rotation,(int)rect.x,(int) rect.y,(int)rect.width,(int) rect.height,false,false);
+
+        spriteBatch.draw(textureRegion[fuel],(rect.x*100-actualWidth/2), (rect.y*100-actualHeight/2),actualWidth/2, actualHeight/2, actualWidth, actualHeight,scaleX,scaleY,rotation);
 
     }
+
+
 
 }

@@ -1,0 +1,19 @@
+
+PoisonButton.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Poison1
+  rotate: false
+  xy: 1, 1
+  size: 913, 913
+  orig: 913, 913
+  offset: 0, 0
+  index: -1
+Poison2
+  rotate: false
+  xy: 916, 1
+  size: 913, 913
+  orig: 913, 913
+  offset: 0, 0
+  index: -1
