@@ -53,11 +53,11 @@ public class MenuScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        img = new Texture(Gdx.files.internal("Main screen/Background.jpg"));
-        TextureRegion imgRegion = new TextureRegion(img, 0, 0, 1280, 914);
+        img = new Texture(Gdx.files.internal("Main screen//Background.jpg"));
+        TextureRegion imgRegion = new TextureRegion(img, 0, 0, 1600 , 900);
 
         Image background = new Image(imgRegion);
-        background.scaleBy(1.5f, 1.5f);
+       // background.scaleBy(1.5f, 1.5f);
         stage = new Stage();
 
         font = new BitmapFont(Gdx.files.internal("Fonts//PoorRichard.fnt"),false);

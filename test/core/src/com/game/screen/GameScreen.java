@@ -33,12 +33,17 @@ public class GameScreen implements Screen{
 
     Box2DDebugRenderer renderer;
     OrthographicCamera camera;
+    OrthographicCamera camera2;
+
 
     AssetLoader Assets;
 
     SpriteBatch sb;
 
     Object spaceship;
+    Object wall;
+    Object ground;
+
 
     public GameScreen(Game game){
         this.game = game;
@@ -49,21 +54,29 @@ public class GameScreen implements Screen{
     public void show() {
         world = new World(new Vector2(0,-10f),true );
         renderer = new Box2DDebugRenderer();
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-
+        camera = new OrthographicCamera(2500,1400);
+        camera.position.set(1250, 700, 0);
+        camera.update();
+        camera2 = new OrthographicCamera(25,14);
+        camera2.position.set(12.50f, 7f, 0);
+        camera2.update();
         sb = new SpriteBatch();
-        spaceship = new AnimatedObject("ship action2/Spaceship.png",1,3,500,500);
+        sb.setProjectionMatrix(camera.combined);
 
+        spaceship = new AnimatedObject("ship action2/Spaceship.png",1,3,11f,14f,3f,2.4f);
 
-        BodyDef staticBodyDef = new BodyDef();
-        staticBodyDef.position.set(0, -720);
-
-
-        Body staticBody = world.createBody(staticBodyDef);
-        PolygonShape ground = new PolygonShape();
-        ground.setAsBox(camera.viewportWidth, 2);
-        staticBody.createFixture(ground, 1.0f);
-        ground.dispose();
+//        wall = new Object("wall.png",1,1,-Gdx.graphics.getWidth()/2+100,-Gdx.graphics.getHeight()/2+100,0.2f,0.2f);
+        wall = new Object("wall.png",1,1,1f,3f,2f,4f);
+        ground = new Object("wall.png",1,1,12.5f,0.5f,25f,1f);
+//        BodyDef staticBodyDef = new BodyDef();
+//        staticBodyDef.position.set(0, 0f);
+//
+//
+//        Body staticBody = world.createBody(staticBodyDef);
+//        PolygonShape ground = new PolygonShape();
+//        ground.setAsBox(camera.viewportWidth, 1);
+//        staticBody.createFixture(ground, 1.0f);
+//        ground.dispose();
 //
 //        BodyDef dynamicBodyDef = new BodyDef();
 //        dynamicBodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -86,8 +99,8 @@ public class GameScreen implements Screen{
 //        dynamicBody.setUserData(spaceship);
         spaceship.setBodyDynamic(world,0.3f,0.4f,0.5f);
 
-
-
+        wall.setBodyStatic(world, 0.5f);
+        ground.setBodyStatic(world,0.5f);
     }
 
     @Override
@@ -119,13 +132,15 @@ public class GameScreen implements Screen{
         }
 
         sb.begin();
-        sb.setProjectionMatrix(camera.combined);
         spaceship.draw(sb);
+        wall.draw(sb);
+        ground.draw(sb);
         sb.end();
 
         camera.update();
+
         world.step(1 / 60f, 6, 2);
-        //renderer.render(world, camera.combined);
+        //renderer.render(world, camera2.combined);
 
     }
 

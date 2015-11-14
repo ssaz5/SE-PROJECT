@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -30,15 +31,20 @@ public class Object {
 
     TextureRegion currentFrame;
 
+    float scaleX;
+    float scaleY;
 
-
-
+    float actualWidth;
+    float actualHeight;
 
 
     public Object(){
 
     }
-    public Object(String fileLoc, int row, int col, float x, float y ){
+    public Object(String fileLoc, int row, int col, float x, float y , float width, float height){
+
+
+
         columns = col;
         rows = row;
         rect = new Rectangle();
@@ -54,8 +60,15 @@ public class Object {
         }
         rect.x = x;
         rect.y = y;
-        rect.width = texture.getWidth()/columns;
-        rect.height= texture.getHeight()/rows;
+        rect.width = width;
+        rect.height= height;
+
+        actualWidth = texture.getWidth()/columns;
+        actualHeight = (texture.getHeight()/rows);
+
+        scaleX = rect.width*100/actualWidth;
+        scaleY= rect.height*100/actualHeight;
+        currentFrame = textureRegion[0];
     }
 
     public Object(Texture t, int row, int col, float x, float y ){
@@ -77,12 +90,14 @@ public class Object {
         rect.width = texture.getWidth()/columns;
         rect.height= texture.getHeight()/rows;
         currentFrame = textureRegion[0];
+
     }
 
 
 
     public void draw(SpriteBatch spriteBatch){
-        spriteBatch.draw(currentFrame,rect.x-rect.width/2, rect.y-rect.height/2,rect.width/2, rect.height/2, rect.width, rect.height,1,1,rotation);
+
+        spriteBatch.draw(currentFrame,(rect.x*100-actualWidth/2), (rect.y*100-actualHeight/2),actualWidth/2, actualHeight/2, actualWidth, actualHeight,scaleX,scaleY,rotation);
 
     }
 
@@ -104,30 +119,30 @@ public class Object {
     }
 
 
-    public void setBodyStatic(World world, float density){
+    public Body setBodyStatic(World world, float density){
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(rect.x,rect.y);
+        bodyDef.position.set(rect.x-rect.width/2,rect.y-rect.height/2);
 
         Body body = world.createBody(bodyDef);
 
         PolygonShape sShape = new PolygonShape();
-        sShape.setAsBox(rect.width,rect.height);
+        sShape.setAsBox(rect.width/2, rect.height/2, new Vector2(rect.width/2, rect.height/2),0f);
 
         body.createFixture(sShape,density);
         sShape.dispose();
-
+        return body;
     }
 
     public Body setBodyDynamic(World world, float density, float friction, float restitution){
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(rect.x, rect.y);
+        bodyDef.position.set(rect.x-rect.width/2,rect.y-rect.height/2);
 
         Body body = world.createBody(bodyDef);
 
-        CircleShape dShape = new CircleShape();
-        dShape.setRadius((((rect.height>rect.width)?rect.width:rect.height)/2));
+        PolygonShape dShape = new PolygonShape();
+        dShape.setAsBox(rect.width/2, rect.height/2, new Vector2(0, 0),0f);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = dShape;
         fixtureDef.friction = friction;

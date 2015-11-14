@@ -7,6 +7,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.logging.Logger;
+import java.util.logging.LoggingMXBean;
+
+import sun.rmi.runtime.Log;
+
 /**
  * Created by Suleman on 11/11/2015.
  */
@@ -17,7 +22,10 @@ public class AnimatedObject extends Object {
 
     float stateTime;
 
-    public AnimatedObject(String fileLoc, int row, int col, float x, float y ){
+    public AnimatedObject(String fileLoc, int row, int col, float x, float y, float width, float height ){
+
+
+
         columns = col;
         rows = row;
         rect = new Rectangle();
@@ -34,12 +42,20 @@ public class AnimatedObject extends Object {
         }
         rect.x = x;
         rect.y = y;
-        rect.width = texture.getWidth()/columns;
-        rect.height= texture.getHeight()/rows;
+        rect.width = width;
+        rect.height= height;
+
+        actualWidth = texture.getWidth()/columns;
+        actualHeight = (texture.getHeight()/rows);
+
+        scaleX = rect.width*100/actualWidth;
+        scaleY= rect.height*100/actualHeight;
 
         stateTime = 0f;
 
         animation = new Animation(0.25f,textureRegion);
+
+
 
     }
 
@@ -47,8 +63,8 @@ public class AnimatedObject extends Object {
     public void draw(SpriteBatch spriteBatch){
         stateTime += Gdx.graphics.getDeltaTime();
         currentFrame = animation.getKeyFrame(stateTime, true);
-        spriteBatch.draw(currentFrame,rect.x-rect.width/2, rect.y-rect.height/2,rect.width/2, rect.height/2, rect.width, rect.height,1,1,rotation);
-
+        //spriteBatch.draw(currentFrame,(rect.x-rect.width/2)*100, (rect.y-rect.height/2)*100,(texture.getWidth()/columns)/2, (texture.getHeight()/rows)/2, texture.getWidth()/columns, texture.getHeight()/rows,scaleX,scaleY,rotation);
+        spriteBatch.draw(currentFrame,(rect.x*100-actualWidth/2), (rect.y*100-actualHeight/2),actualWidth/2, actualHeight/2, actualWidth, actualHeight,scaleX,scaleY,rotation);
         //spriteBatch.draw(currentFrame, rect.x, rect.y,rect.x, rect.y, rect.width, rect.height,1,1,rotation,(int)rect.x,(int) rect.y,(int)rect.width,(int) rect.height,false,false);
 
     }
