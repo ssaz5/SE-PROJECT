@@ -1,8 +1,9 @@
 package com.game.screen;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.objects.AssetLoader;
+import com.objects.*;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.objects.Object;
 
 /**
  * Created by Suleman on 11/8/2015.
@@ -27,6 +29,8 @@ public class MenuScreen implements Screen {
     Game game;
 
     SpriteBatch batch;
+    OrthographicCamera camera;
+    com.objects.Object background;
     Texture img;
     Stage stage;
     Label label;
@@ -53,17 +57,25 @@ public class MenuScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        img = new Texture(Gdx.files.internal("Main screen//Background.jpg"));
-        TextureRegion imgRegion = new TextureRegion(img, 0, 0, 1600 , 900);
+        camera = new OrthographicCamera(2500,1400);
+        camera.position.set(1250, 700, 0);
+        camera.update();
 
-        Image background = new Image(imgRegion);
-       // background.scaleBy(1.5f, 1.5f);
+        batch.setProjectionMatrix(camera.combined);
+
+        img = new Texture(Gdx.files.internal("Main screen//Background.jpg"));
+//        TextureRegion imgRegion = new TextureRegion(img, 0, 0, 1600 , 900);
+
+//        Image background = new Image(imgRegion);
+//        background.scaleBy(Gdx.graphics.getWidth() / background.getImageWidth(), Gdx.graphics.getHeight() / background.getImageHeight());
+        background = new Object(img, 1, 1, 12.5f ,7f, 14f, 25f);
+        background.setRotation(90f);
         stage = new Stage();
 
         font = new BitmapFont(Gdx.files.internal("Fonts//PoorRichard.fnt"),false);
         labelstyle = new Label.LabelStyle(font, Color.WHITE);
 
-        label = new Label("ACIDIC 2D:", labelstyle);
+        label = new Label("ACIDIC 2D", labelstyle);
 
         labelContainer = new Container(label);
         labelContainer.setTransform(true);
@@ -111,7 +123,7 @@ public class MenuScreen implements Screen {
         creditsButtonC.setScale(2);
         creditsButtonC.setPosition(Gdx.graphics.getWidth() / 2 - creditsButtonC.getPrefWidth() / 2 + 600, Gdx.graphics.getHeight() / 2 - creditsButtonC.getPrefHeight() / 2);
 
-        stage.addActor(background);
+//        stage.addActor(background);
         stage.addActor(labelContainer);
         stage.addActor(playButtonC);
         stage.addActor(scoreButtonC);
@@ -160,6 +172,10 @@ public class MenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
+        batch.begin();
+
+        background.draw(batch);
+        batch.end();
         stage.draw();
     }
 
