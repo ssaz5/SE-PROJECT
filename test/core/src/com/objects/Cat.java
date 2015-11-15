@@ -19,6 +19,7 @@ public class Cat extends AnimatedObject {
     Animation temp;
 
     CatType catType;
+    CatCover cover;
 
 
     public Cat(String fileLoc1,String fileLoc2, int row1, int col1,int row2,int col2 ,float x, float y, float width, float height) {
@@ -119,10 +120,12 @@ public class Cat extends AnimatedObject {
             case BushCat:
                 texture = assetLoader.BushCat;
                 fallTexture = assetLoader.BushCatFall;
+                cover = new CatCover(assetLoader.Bush, 1 ,1, x, y, width, height);
                 break;
             case SpaceShipCat:
                 texture = assetLoader.SpaceShipCat;
                 fallTexture = assetLoader.SpaceShipCatFall;
+                cover = new CatCover(assetLoader.Rocket, 1 ,1, x, y, width, height);
                 break;
         }
 
