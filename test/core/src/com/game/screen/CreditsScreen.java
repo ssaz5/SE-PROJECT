@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,20 +18,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.objects.AssetLoader;
-
+import com.objects.Object;
 /**
  * Created by programmercore on 11/11/15.
  */
 public class CreditsScreen implements Screen {
 
     Game game;
+    OrthographicCamera camera;
+    Object background;
     SpriteBatch batch;
     Texture img;
     float x;
     float y;
     Stage stage;
     Label label, label1, label2, label3;
-    Container labelContainer, labelContainer1, labelContainer2, labelContainer3;
+    Container labelContainer, labelContainer1, labelContainer2, labelContainer3, imageCont;
     Label.LabelStyle labelstyle;
     BitmapFont font;
 
@@ -44,14 +47,28 @@ public class CreditsScreen implements Screen {
     @Override
     public void show(){
         batch = new SpriteBatch();
-        img = new Texture(Gdx.files.internal("Main screen/Background.jpg"));
-        TextureRegion imgRegion = new TextureRegion(img, 0, 0, 1280, 914);
+        camera = new OrthographicCamera(2500,1400);
+        camera.position.set(1250, 700, 0);
+        camera.update();
 
-        Image background = new Image(imgRegion);
-        background.scaleBy(1.5f, 1.5f);
+        batch.setProjectionMatrix(camera.combined);
 
-        stage = new Stage();
 
+        img = new Texture(Gdx.files.internal("Main screen/Credits.jpg"));
+        background = new Object(img, 1, 1, 25f ,7f, 14f, 50f);
+        background.setRotation(90f);
+     //   TextureRegion imgRegion = new TextureRegion(img, 0, 0, 800, 2860);
+
+//        Image background = new Image(imgRegion);
+  //      imageCont = new Container(background);
+    //    imageCont.setTransform(true);
+//        imageCont.setOrigin(imageCont.getWidth()/2,imageCont.getHeight()/2);
+      //  imageCont.setPosition(0 + Gdx.graphics.getWidth(), 0);
+       // imageCont.setRotation(90f);
+//        background.scaleBy(1.5f, 1.5f);
+
+       // stage = new Stage();
+/*
         font = new BitmapFont(Gdx.files.internal("Fonts//PoorRichard.fnt"),false);
         labelstyle = new Label.LabelStyle(font, Color.WHITE);
 
@@ -82,15 +99,16 @@ public class CreditsScreen implements Screen {
         labelContainer3.setScale(2.5f);
         labelContainer3.setRotation(90f);
         labelContainer3.setPosition(labelContainer3.getPrefWidth() / 2 + 1110, Gdx.graphics.getHeight() / 2 - labelContainer3.getPrefHeight() / 2);
+*/
+  //      stage.act();
 
-        stage.act();
+    //    stage.addActor(imageCont);
+ //       stage.addActor(labelContainer);
+ //       stage.addActor(labelContainer1);
+ //       stage.addActor(labelContainer2);
+//        stage.addActor(labelContainer3);
+      //  Gdx.input.setInputProcessor(stage);
 
-        stage.addActor(background);
-        stage.addActor(labelContainer);
-        stage.addActor(labelContainer1);
-        stage.addActor(labelContainer2);
-        stage.addActor(labelContainer3);
-        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -100,7 +118,12 @@ public class CreditsScreen implements Screen {
         if(Gdx.input.isTouched())
             game.setScreen(new MenuScreen(game, assetLoader));
 
-        stage.draw();
+
+        batch.begin();
+
+        background.draw(batch);
+        batch.end();
+        //stage.draw();
     }
 
     @Override
