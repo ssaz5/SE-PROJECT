@@ -20,11 +20,13 @@ public class Cat extends AnimatedObject {
     Texture fallTexture;
     Animation temp;
 
+
     public CatType catType;
+    CatCover cover;
 
 
     public Cat(String fileLoc1,String fileLoc2, int row1, int col1,int row2,int col2 ,float x, float y, float width, float height) {
-        this.objectType = ObjectType.Canon.Cat;
+        this.objectType = ObjectType.Cat;
         id = count;
         count++;
 
@@ -73,7 +75,7 @@ public class Cat extends AnimatedObject {
     }
 
     public Cat(Texture texture, Texture fallTexture, int row1, int col1,int row2, int col2, float x, float y, float width, float height) {
-        this.objectType = ObjectType.Canon.Cat;
+        this.objectType = ObjectType.Cat;
         id = count;
         count++;
 
@@ -120,7 +122,7 @@ public class Cat extends AnimatedObject {
     }
 
     public Cat(CatType catType, int row1, int col1, int row2, int col2, float x, float y, float width, float height, AssetLoader assetLoader){
-        this.objectType = ObjectType.Canon.Cat;
+        this.objectType = ObjectType.Cat;
         id = count;
         count++;
 
@@ -133,10 +135,12 @@ public class Cat extends AnimatedObject {
             case BushCat:
                 texture = assetLoader.BushCat;
                 fallTexture = assetLoader.BushCatFall;
+                cover = new CatCover(assetLoader.Bush, 1 ,1, x, y, width, height);
                 break;
             case SpaceShipCat:
                 texture = assetLoader.SpaceShipCat;
                 fallTexture = assetLoader.SpaceShipCatFall;
+                cover = new CatCover(assetLoader.Rocket, 1 ,1, x, y, width, height);
                 break;
         }
 

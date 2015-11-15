@@ -1,12 +1,10 @@
 package com.objects;
 
-/**
- * Created by programmercore on 11/9/15.
- */
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 
 public class AssetLoader {
 
@@ -18,6 +16,8 @@ public class AssetLoader {
     public static Texture AcidShot;
     public static Texture PoisonShot;
     public static Texture Portal;
+    public static Texture Rocket;
+    public static Texture Bush;
 
 
     public static Texture loadTexture (String file){
@@ -33,7 +33,10 @@ public class AssetLoader {
         AcidShot = loadTexture("Shots/AcidShot.png");
         PoisonShot = loadTexture("Shots/PoisonShot.png");
         Portal = loadTexture("Portal/Portal.png");
-        }
+
+        Bush = loadTexture("Bushes/33-09.jpg");
+        Rocket = loadTexture("Rocket_cat/rocket2-02.jpg");
+    }
 }
 
 
