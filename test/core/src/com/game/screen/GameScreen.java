@@ -88,7 +88,7 @@ public class GameScreen implements Screen{
         camera2.update();
         sb = new SpriteBatch();
         Random randomGenerator = new Random();
-
+        lastSpawnTime = TimeUtils.nanoTime();
         sb.setProjectionMatrix(camera.combined);
 
 
