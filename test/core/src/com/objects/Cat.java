@@ -1,6 +1,7 @@
 package com.objects;
 
 import com.Enums.CatType;
+import com.Enums.ObjectType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 
 
@@ -18,10 +20,14 @@ public class Cat extends AnimatedObject {
     Texture fallTexture;
     Animation temp;
 
-    CatType catType;
+    public CatType catType;
 
 
     public Cat(String fileLoc1,String fileLoc2, int row1, int col1,int row2,int col2 ,float x, float y, float width, float height) {
+        this.objectType = ObjectType.Canon.Cat;
+        id = count;
+        count++;
+
 
         temp = null;
 
@@ -67,6 +73,10 @@ public class Cat extends AnimatedObject {
     }
 
     public Cat(Texture texture, Texture fallTexture, int row1, int col1,int row2, int col2, float x, float y, float width, float height) {
+        this.objectType = ObjectType.Canon.Cat;
+        id = count;
+        count++;
+
 
         temp = null;
 
@@ -110,10 +120,14 @@ public class Cat extends AnimatedObject {
     }
 
     public Cat(CatType catType, int row1, int col1, int row2, int col2, float x, float y, float width, float height, AssetLoader assetLoader){
+        this.objectType = ObjectType.Canon.Cat;
+        id = count;
+        count++;
 
         temp = null;
 
         body = null;
+        this.catType = catType;
 
         switch (catType){
             case BushCat:
@@ -165,12 +179,17 @@ public class Cat extends AnimatedObject {
 
     public void setFalling(){
         isFalling = true;
-        texture.dispose();
+        //texture.dispose();
         textureRegion = null;
         animation = null;
 
 
         BodyDef.BodyType bodyType = body.getType();
+
+        //for (Fixture f: body.getFixtureList()) {
+          //  body.destroyFixture(f);
+        //}
+
         World world = body.getWorld();
         world.destroyBody(body);
 
@@ -202,7 +221,7 @@ public class Cat extends AnimatedObject {
         fixtureDef.restitution = 0.5f;
         fixtureDef.friction = 0.5f;
 
-        setBodyDynamic(world);
+        setBodyDynamic(world,0.5f,0.5f,0.5f);
 
 
 

@@ -1,5 +1,6 @@
 package com.objects;
 
+import com.Enums.ObjectType;
 import com.Enums.ShotType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,10 +13,12 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class Shot extends Object {
 
-    ShotType shotType;
+    public ShotType shotType;
 
     public Shot(Texture t, int row, int col, float x, float y, float width, float height, ShotType shotType){
-
+        this.objectType = ObjectType.Shot;
+        id = count;
+        count++;
         this.shotType = shotType;
         columns = col;
 
@@ -46,6 +49,9 @@ public class Shot extends Object {
     }
 
     public Shot(ShotType shotType, float x, float y, float width, float height, float rotation, World world,AssetLoader assetLoader){
+        this.objectType = ObjectType.Canon.Shot;
+        id = count;
+        count++;
 
         this.shotType = shotType;
         columns = 1;

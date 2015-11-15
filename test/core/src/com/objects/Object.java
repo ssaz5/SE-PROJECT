@@ -1,5 +1,6 @@
 package com.objects;
 
+import com.Enums.ObjectType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,6 +23,11 @@ import com.badlogic.gdx.physics.box2d.World;
  * Created by Suleman on 11/9/2015.
  */
 public class Object {
+
+    ObjectType objectType;
+
+    static int count = 0;
+    int id;
     static final int ROW=5;
     int rows;
     int columns;
@@ -48,7 +54,8 @@ public class Object {
     }
     public Object(String fileLoc, int row, int col, float x, float y , float width, float height){
 
-
+        id = count;
+        count++;
 
         columns = col;
         rows = row;
@@ -80,7 +87,8 @@ public class Object {
 
     public Object(Texture t, int row, int col, float x, float y, float width, float height ){
 
-
+        id = count;
+        count++;
 
         columns = col;
         rows = row;
@@ -111,17 +119,24 @@ public class Object {
     }
 
 
+    public void setType(ObjectType objectType){
+        this.objectType = objectType;
+    }
 
     public void draw(SpriteBatch spriteBatch){
 
-        spriteBatch.draw(currentFrame,(rect.x*100-actualWidth/2), (rect.y*100-actualHeight/2),actualWidth/2, actualHeight/2, actualWidth, actualHeight,scaleX,scaleY,rotation);
+        spriteBatch.draw(currentFrame, (rect.x * 100 - actualWidth / 2), (rect.y * 100 - actualHeight / 2), actualWidth / 2, actualHeight / 2, actualWidth, actualHeight, scaleX, scaleY, rotation);
 
     }
 
     public void dispose(){
-
+        for (Fixture f: body.getFixtureList()) {
+            body.destroyFixture(f);
+        }
+        body.getWorld().destroyBody(body);
 
     }
+
 
     public void setPosition(float x, float y){
         rect.x = x;
@@ -138,7 +153,7 @@ public class Object {
 
 public Body setBodyStatic(World world, float density)                    {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(rect.x, rect.y);
+    bodyDef.position.set(rect.x, rect.y);
 
         body = world.createBody(bodyDef);
 
@@ -164,7 +179,7 @@ public Body setBodyStatic(World world, float density)                    {
         body = world.createBody(bodyDef);
 
         PolygonShape dShape = new PolygonShape();
-        dShape.setAsBox(rect.width/2, rect.height/2, new Vector2(0,0),0);
+        dShape.setAsBox(rect.width / 2, rect.height / 2, new Vector2(0, 0), 0);
         fixtureDef = new FixtureDef();
         fixtureDef.shape = dShape;
         fixtureDef.friction = friction;
@@ -195,7 +210,7 @@ public Body setBodyStatic(World world, float density)                    {
         fixtureDef.shape = dShape;
 
 
-        Fixture fixture = body.createFixture(fixtureDef);
+        body.createFixture(fixtureDef);
 
         dShape.dispose();
 
@@ -225,7 +240,18 @@ public Body setBodyStatic(World world, float density)                    {
         return body;
     }
 
+    public boolean equals(Object object){
+        if (id == object.id){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
+    public ObjectType getObjectType(){
+        return   objectType;
+    }
 
 }
 

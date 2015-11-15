@@ -26,6 +26,9 @@ public class AnimatedObject extends Object {
 
     public AnimatedObject(String fileLoc, int row, int col, float x, float y, float width, float height ){
 
+        id = count;
+        count++;
+
         body = null;
 
         columns = col;
@@ -62,6 +65,10 @@ public class AnimatedObject extends Object {
     }
 
     public AnimatedObject(Texture texture, int row, int col, float x, float y, float width, float height ){
+
+
+        id = count;
+        count++;
         body = null;
 
         columns = col;

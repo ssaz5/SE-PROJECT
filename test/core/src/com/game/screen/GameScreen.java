@@ -1,6 +1,7 @@
 package com.game.screen;
 
 import com.Enums.CatType;
+import com.Enums.ObjectType;
 import com.Play.GestureProcessor;
 import com.acidic.ui.Button;
 import com.badlogic.gdx.Game;
@@ -16,16 +17,27 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.objects.*;
 import com.objects.Object;
 import com.Enums.ShotType;
 import java.util.Random;
+
+
 
 /**
  * Created by Suleman on 11/8/2015.
@@ -49,9 +61,11 @@ public class GameScreen implements Screen{
     Object spaceship;
     Object wall;
     Object ground;
+    Object portal;
     Object Background;
     Canon canon;
 
+    Array<Object> toDispose;
 
     Stage stage;
 
@@ -59,14 +73,19 @@ public class GameScreen implements Screen{
 
 
     Array<Cat> Katz;
+    Array<Cat> setToFall;
+
 
     Array<Shot> shots;
 
     float time = 0;
+    float difficulty = 0;
 
     AssetLoader assetLoader;
 
     boolean start = true;
+
+    int scoreCount= 0;
 
     public GameScreen(Game game, AssetLoader assetLoader){
         this.game = game;
@@ -92,8 +111,11 @@ public class GameScreen implements Screen{
         sb.setProjectionMatrix(camera.combined);
 
 
-        spaceship = new AnimatedObject("ship action2/Spaceship.png",1,3,7f,10f,3f,2.4f);
-        spaceship.setBodyDynamic(world, 0.3f, 0.4f, 0.5f);
+        toDispose = new Array<Object>();
+
+        spaceship = new AnimatedObject("ship action2/Spaceship.png",1,3,33.5f,11f,4f,3.2f);
+        spaceship.setBodyStatic(world, 0.3f);
+        spaceship.setType(ObjectType.Solid);
 
 
 //      wall = new Object("wall.png",1,1,-Gdx.graphics.getWidth()/2+100,-Gdx.graphics.getHeight()/2+100,0.2f,0.2f);
@@ -101,23 +123,44 @@ public class GameScreen implements Screen{
 
         wall = new Object("wall.png",1,1,1f,2f,2f,4f);
         wall.setBodyStatic(world, 0.5f);
+        wall.setType(ObjectType.Solid);
 
+        portal =  new Object(assetLoader.Portal, 1,1,13.5f,2f,23f,2f);
+        portal.setBodyStatic(world, 1);
+        portal.setType(ObjectType.Solid);
 
         ground = new Object("wall.png",1,1,12.5f,-0.0f,25f,0.02f);
         ground.setBodyStatic(world, 0.5f);
+        ground.setType(ObjectType.Solid);
 
         Background = new Object("Main screen/MainScreen2.jpg",1,1,11f,7f,62f,14f);
+        Background.setType(ObjectType.Empty);
 
         canon = new Canon("Canon gun/Canon.png",2,3,4.5f,2.5f,4.5f,2.0f);
         canon.setBodyStatic(world, 0.5f);
       //  canon.body.setTransform(canon.body.getPosition(),canon.body.getAngle()+0.7854f);
+        canon.body.setActive(false);
 
 
 
-        stage = new Stage();
+
+        stage = new Stage(new FitViewport(2500f,1400f));
         font = new BitmapFont(Gdx.files.internal("Fonts/PoorRichard.fnt"),false);
 
         stage.act();
+
+        Label.LabelStyle labelStyle;
+        labelStyle = new Label.LabelStyle(font, com.badlogic.gdx.graphics.Color.FIREBRICK);
+        final Label scoreLabel;
+        scoreLabel = new Label("Score: " + scoreCount,labelStyle);
+        final Container scoreLabelContainer = new Container(scoreLabel);
+        scoreLabelContainer.setTransform(true);
+        scoreLabelContainer.setOrigin(0f,0f);
+        scoreLabelContainer.setPosition(250, 1350);
+        scoreLabelContainer.scaleBy(2);
+
+        stage.addActor(scoreLabelContainer);
+
 
         Button AcidButton = new Button("Buttons/Menu Button Pack/AcidButton.pack",font, "Acid",1400f,180f,300f,300f);
         AcidButton.setStage(stage);
@@ -139,7 +182,7 @@ public class GameScreen implements Screen{
         AcidButton.buttonContainer.addListener(new InputListener() {
             @Override
             public boolean  touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Shot shot = canon.fire(world, ShotType.PoisonShot, assetLoader);
+                Shot shot = canon.fire(world, ShotType.AcidShot, assetLoader);
                 if(shot != null) {
                     shots.add(shot);
                 }
@@ -162,8 +205,108 @@ public class GameScreen implements Screen{
         });
 
         Katz = new Array<Cat>();
+        setToFall = new Array<Cat>();
 
+
+        world.setContactListener(new ContactListener() {
+
+            @Override
+            public void beginContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+                if (fixtureA.getBody() != canon.body && fixtureB.getBody() != canon.body){
+                    Object object =(Object) fixtureA.getBody().getUserData();
+                    if (object.getObjectType() == ObjectType.Shot){
+                        Shot shot = (Shot) object;
+                        Object ob =(Object) fixtureB.getBody().getUserData();
+                        boolean destroyShot=true;
+                        if (ob.getObjectType() == ObjectType.Cat){
+                            Cat cat = (Cat) ob;
+                            if ( cat.catType == CatType.BushCat && shot.shotType == ShotType.PoisonShot || cat.catType == CatType.SpaceShipCat && shot.shotType == ShotType.AcidShot) {
+
+                                if(!cat.isFalling) {
+                                    setToFall.add(cat);
+                                    scoreCount++;
+                                    scoreLabel.setText("Score: "+scoreCount);
+                                }
+                                else{
+                                    destroyShot = false;
+                                }
+
+                            }
+                        }
+                        if (destroyShot) {
+                            shots.removeValue(shot, false);
+                            toDispose.add(shot);
+                        }
+                    }
+                    else if (object.getObjectType() == ObjectType.Cat){
+                        Cat cat = (Cat) object;
+                        Object ob =(Object) fixtureB.getBody().getUserData();
+                        if(ob.getObjectType() != ObjectType.Shot && ob.getObjectType() != ObjectType.Cat && cat.isFalling ){
+                            Katz.removeValue(cat,false);
+                            toDispose.add(cat);
+                        }
+                    }
+                    object =(Object) fixtureB.getBody().getUserData();
+                    if( object.getObjectType() == ObjectType.Shot){
+                        Shot shot = (Shot) object;
+                        Object ob =(Object) fixtureA.getBody().getUserData();
+                        boolean destroyShot = true;
+                        if (ob.getObjectType() == ObjectType.Cat){
+                            Cat cat = (Cat) ob;
+                            if ( cat.catType == CatType.BushCat && shot.shotType == ShotType.PoisonShot || cat.catType == CatType.SpaceShipCat && shot.shotType == ShotType.AcidShot) {
+                                if(!cat.isFalling) {
+                                    setToFall.add(cat);
+                                    scoreCount++;
+                                    scoreLabel.setText("Score: "+scoreCount);
+                                }
+                                else{
+                                    destroyShot = false;
+                                }
+                            }
+                        }
+
+                        if (destroyShot) {
+                            shots.removeValue(shot, false);
+                            toDispose.add(shot);
+                        }
+                    }
+                    else if (object.getObjectType() == ObjectType.Cat){
+                        Cat cat = (Cat) object;
+                        Object ob =(Object) fixtureA.getBody().getUserData();
+                        if(ob.getObjectType() != ObjectType.Shot && ob.getObjectType() != ObjectType.Cat && cat.isFalling ){
+                            Katz.removeValue(cat,false);
+                            toDispose.add(cat);
+                        }
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+            }
+
+
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+            }
+
+        });
     }
+
+
 
     public static int randInt(int min, int max) {
 
@@ -175,6 +318,9 @@ public class GameScreen implements Screen{
         int randomNum = rand.nextInt((max - min) + 1) + min;
 
         return randomNum;
+
+
+
     }
 
     @Override
@@ -218,17 +364,20 @@ public class GameScreen implements Screen{
         }
 
         //Checks whether to spawn a cat or not
-        if(time >4f) {
+        if(time >4f-difficulty) {
             if (randInt(0, 1) > 0) {
-                Cat cat = new Cat(CatType.SpaceShipCat,1,3,1,2,25f,(float)randInt(3,14),2,3,assetLoader);
+                Cat cat = new Cat(CatType.SpaceShipCat,1,3,1,2,25f,(float)randInt(6,12),2,3,assetLoader);
                 cat.setBodyStatic(world,0.5f);
                 Katz.add(cat);
             } else {
-                Cat cat = new Cat(CatType.BushCat,1,3,1,2,25f,(float)randInt(3,14),2,3,assetLoader);
+                Cat cat = new Cat(CatType.BushCat,1,3,1,2,25f,(float)randInt(6,12),2,3,assetLoader);
                 cat.setBodyStatic(world,0.5f);
                 Katz.add(cat);
             }
             time = 0;
+            if(difficulty<2.5) {
+                difficulty += 0.05f;
+            }
         }
 
 
@@ -241,16 +390,34 @@ public class GameScreen implements Screen{
         spaceship.draw(sb);
         wall.draw(sb);
         ground.draw(sb);
+        portal.draw(sb);
+        int index = 0;
+        for (Cat cat : Katz){
+            cat.draw(sb);
+            if (cat.rect.x > 0 ) {
+                if (!cat.isFalling) {
+                    cat.body.setTransform(cat.body.getPosition().x - 0.1f, cat.body.getPosition().y, cat.body.getAngle());
+                }
+            }
+            else{
+                Katz.removeIndex(index);
+                toDispose.add(cat);
+            }
+            index++;
+
+        }
+
+
         canon.draw(sb);
+
 
 
         for (Shot shot : shots){
             shot.draw(sb);
+
         }
-        for (Cat cat : Katz){
-            cat.draw(sb);
-            cat.body.setTransform(cat.body.getPosition().x - 0.1f,cat.body.getPosition().y,cat.body.getAngle());
-        }
+
+
 
 
         sb.end();
@@ -262,7 +429,20 @@ public class GameScreen implements Screen{
 
 
         world.step(1 / 60f, 6, 2);
-        renderer.render(world, camera2.combined);
+        //renderer.render(world, camera2.combined);
+
+        index = 0;
+        for (Object object : toDispose){
+            object.dispose();
+            toDispose.removeIndex(index);
+        }
+
+        index = 0;
+        for (Cat object : setToFall){
+            object.setFalling();
+            setToFall.removeIndex(index);
+        }
+
 
     }
 

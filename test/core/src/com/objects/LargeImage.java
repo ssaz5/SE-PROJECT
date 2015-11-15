@@ -13,6 +13,9 @@ public class LargeImage extends Object {
 
     public LargeImage(String fileLoc, int row, int col, float x, float y, float width, float height ){
 
+        id = count;
+        count++;
+
         columns = col;
         rows = row;
         rect = new Rectangle();

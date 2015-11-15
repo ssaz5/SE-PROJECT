@@ -17,6 +17,7 @@ public class AssetLoader {
     public static Texture SpaceShipCatFall;
     public static Texture AcidShot;
     public static Texture PoisonShot;
+    public static Texture Portal;
 
 
     public static Texture loadTexture (String file){
@@ -31,6 +32,7 @@ public class AssetLoader {
         SpaceShipCatFall = new Texture(Gdx.files.internal("cat/SpaceShipCatFall.png"));
         AcidShot = loadTexture("Shots/AcidShot.png");
         PoisonShot = loadTexture("Shots/PoisonShot.png");
+        Portal = loadTexture("Portal/Portal.png");
         }
 }
 

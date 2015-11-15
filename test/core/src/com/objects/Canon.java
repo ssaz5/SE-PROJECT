@@ -1,5 +1,6 @@
 package com.objects;
 
+import com.Enums.ObjectType;
 import com.Enums.ShotType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,6 +20,10 @@ public class Canon extends Object {
     int shotcount=0;
 
     public Canon(String fileLoc, int row, int col, float x, float y , float width, float height){
+        this.objectType = ObjectType.Canon.Canon;
+        id = count;
+        count++;
+
         fuel = 4;
         columns = col;
         rows = row;
@@ -49,6 +54,10 @@ public class Canon extends Object {
     }
 
     public Canon(Texture t, int row, int col, float x, float y, float width, float height ){
+        this.objectType = ObjectType.Canon.Canon;
+        id = count;
+        count++;
+
         fuel = 4;
         columns = col;
         rows = row;
