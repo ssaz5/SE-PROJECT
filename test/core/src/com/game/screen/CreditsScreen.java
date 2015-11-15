@@ -37,8 +37,11 @@ public class CreditsScreen implements Screen {
     Label.LabelStyle labelstyle;
     BitmapFont font;
 
-    public CreditsScreen(Game game){
+    AssetLoader assetLoader;
+
+    public CreditsScreen(Game game, AssetLoader assetLoader){
         this.game = game;
+        this.assetLoader = assetLoader;
     }
 
     @Override
@@ -113,7 +116,7 @@ public class CreditsScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if(Gdx.input.isTouched())
-            game.setScreen(new MenuScreen(game));
+            game.setScreen(new MenuScreen(game, assetLoader));
 
 
         batch.begin();

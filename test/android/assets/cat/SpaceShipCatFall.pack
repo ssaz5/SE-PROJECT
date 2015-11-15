@@ -1,0 +1,19 @@
+
+SpaceShipCatFall.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+SpaceShipCatFall1
+  rotate: false
+  xy: 0, 0
+  size: 775, 653
+  orig: 775, 653
+  offset: 0, 0
+  index: -1
+SpaceShipCatFall2
+  rotate: false
+  xy: 775, 1
+  size: 775, 653
+  orig: 775, 653
+  offset: 0, 0
+  index: -1

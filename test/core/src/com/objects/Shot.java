@@ -1,53 +1,24 @@
 package com.objects;
 
 import com.Enums.ShotType;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
- * Created by Suleman on 11/14/2015.
+ * Created by Suleman on 11/15/2015.
  */
-public class Canon extends Object {
+public class Shot extends Object {
 
-    int fuel;
+    ShotType shotType;
 
-    public Canon(String fileLoc, int row, int col, float x, float y , float width, float height){
-        fuel = 4;
+    public Shot(Texture t, int row, int col, float x, float y, float width, float height, ShotType shotType){
+
+        this.shotType = shotType;
         columns = col;
-        rows = row;
-        rect = new Rectangle();
-        texture = new Texture(Gdx.files.internal(fileLoc));
-        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth()/columns, texture.getHeight()/rows);
-        textureRegion = new TextureRegion[rows*columns];
-        int index=0;
-        for (int i =0; i < rows; i++){
-            for (int j=0; j<columns;j++){
-                textureRegion[index++] = tmp[i][j];
-            }
 
-        }
-        rect.x = x;
-        rect.y = y;
-        rect.width = width;
-        rect.height= height;
-
-        actualWidth = texture.getWidth()/columns;
-        actualHeight = (texture.getHeight()/rows);
-
-        scaleX = rect.width*100/actualWidth;
-        scaleY= rect.height*100/actualHeight;
-        currentFrame = textureRegion[0];
-
-        body = null;
-    }
-
-    public Canon(Texture t, int row, int col, float x, float y, float width, float height ){
-        fuel = 4;
-        columns = col;
         rows = row;
         rect = new Rectangle();
         texture = t;
@@ -58,7 +29,6 @@ public class Canon extends Object {
             for (int j=0; j<columns;j++){
                 textureRegion[index++] = tmp[i][j];
             }
-
         }
         rect.x = x;
         rect.y = y;
@@ -75,32 +45,57 @@ public class Canon extends Object {
         body = null;
     }
 
-    public void increaseFuel(){
-        fuel++;
+    public Shot(ShotType shotType, float x, float y, float width, float height, float rotation, World world,AssetLoader assetLoader){
+
+        this.shotType = shotType;
+        columns = 1;
+
+        rows = 1;
+        rect = new Rectangle();
+        switch (shotType){
+            case AcidShot:
+                texture = assetLoader.AcidShot;
+                break;
+            case PoisonShot:
+                texture = assetLoader.PoisonShot;
+                break;
+        }
+
+
+        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth()/columns, texture.getHeight()/rows);
+        textureRegion = new TextureRegion[rows*columns];
+        int index=0;
+        for (int i =0; i < rows; i++){
+            for (int j=0; j<columns;j++){
+                textureRegion[index++] = tmp[i][j];
+            }
+        }
+        rect.x = x;
+        rect.y = y;
+        rect.width = width;
+        rect.height= height;
+
+        actualWidth = texture.getWidth()/columns;
+        actualHeight = (texture.getHeight()/rows);
+
+        scaleX = rect.width*100/actualWidth;
+        scaleY= rect.height*100/actualHeight;
+        currentFrame = textureRegion[0];
+
+        body = null;
+        setBodyDynamic(world,0.5f,0.5f,0.1f);
+        
+        body.setTransform(body.getPosition(), MathUtils.degreesToRadians*rotation);
+
     }
-    public void decreaseFuel(){
-        fuel--;
-    }
 
-    public void changeAngle(boolean isup){
-        //use gesture and change angle of the body(box2d)
 
-    }
 
-    public Shot fire(World world, ShotType type, AssetLoader assetLoader){
-        //Generate a shot
-        Shot shot = new Shot(type, rect.x + rect.width/2 + 0.5f, rect.y+rect.height/2 +0.5f,1,1, rotation,world,assetLoader);
 
-        return shot;
-    }
-
-    @Override
-    public void draw(SpriteBatch spriteBatch){
-
-        spriteBatch.draw(textureRegion[fuel],(rect.x*100-actualWidth/2), (rect.y*100-actualHeight/2),actualWidth/2, actualHeight/2, actualWidth, actualHeight,scaleX,scaleY,rotation);
-
-    }
 
 
 
 }
+
+
+

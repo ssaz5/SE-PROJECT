@@ -19,11 +19,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.objects.*;
 import com.objects.Object;
+import com.Enums.ShotType;
 
 /**
  * Created by Suleman on 11/8/2015.
@@ -48,27 +51,27 @@ public class GameScreen implements Screen{
     Object wall;
     Object ground;
     Object Background;
-    Object canon;
+    Canon canon;
 
 
     Stage stage;
 
     BitmapFont font;
 
+    Cat testCat;
+
+    Array<Shot> shots;
 
 
+    float time = 0;
 
-
-
-
-
-
-
+    AssetLoader assetLoader;
 
     boolean start = true;
 
-    public GameScreen(Game game){
+    public GameScreen(Game game, AssetLoader assetLoader){
         this.game = game;
+        this.assetLoader = assetLoader;
 
     }
 
@@ -110,6 +113,12 @@ public class GameScreen implements Screen{
         canon.setBodyStatic(world, 0.5f);
       //  canon.body.setTransform(canon.body.getPosition(),canon.body.getAngle()+0.7854f);
 
+
+        testCat = new Cat("cat/SpaceShipCat.png","cat/SpaceShipCatFall.png",1,3,1,2,20,8,1.3f,2f);
+        testCat.setBodyStatic(world, 0.5f);
+
+
+
         stage = new Stage();
         font = new BitmapFont(Gdx.files.internal("Fonts/PoorRichard.fnt"),false);
 
@@ -129,12 +138,39 @@ public class GameScreen implements Screen{
         multiplexer.addProcessor(new GestureDetector(listener));
         Gdx.input.setInputProcessor(multiplexer);
 
+
+        shots = new Array<Shot>();
+
+        AcidButton.buttonContainer.addListener(new InputListener(){
+            @Override
+            public boolean  touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                shots.add(canon.fire(world,ShotType.AcidShot, assetLoader));
+                return false;
+            }
+        });
+        PoisonButton.buttonContainer.addListener(new InputListener(){
+            @Override
+            public boolean  touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                shots.add(canon.fire(world, ShotType.PoisonShot, assetLoader));
+                return true;
+            }
+        });
+
+
+
+
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        time +=Gdx.graphics.getDeltaTime();
+
+        if (time >15f && !testCat.isFalling){
+            testCat.setFalling();
+        }
 
 
         if (camera.position.x <2950 && start == true){
@@ -171,6 +207,8 @@ public class GameScreen implements Screen{
 
 
 
+
+
         sb.begin();
 
         Background.draw(sb);
@@ -178,6 +216,13 @@ public class GameScreen implements Screen{
         wall.draw(sb);
         ground.draw(sb);
         canon.draw(sb);
+        testCat.draw(sb);
+
+        for (Shot shot : shots){
+            shot.draw(sb);
+        }
+
+
         sb.end();
 
         stage.draw();

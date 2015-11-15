@@ -50,9 +50,9 @@ public class MenuScreen implements Screen {
     Container scoreButtonC;
     Container creditsButtonC;
 
-    public MenuScreen(Game game){
-        this.game = game;
-    }
+    AssetLoader assetLoader;
+
+    public MenuScreen(Game game, AssetLoader assetLoader){  this.game = game; this.assetLoader = assetLoader;   }
 
     @Override
     public void show() {
@@ -134,7 +134,7 @@ public class MenuScreen implements Screen {
         playButtonC.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreen(game, assetLoader));
                 return true;
             }
         });
@@ -142,7 +142,7 @@ public class MenuScreen implements Screen {
         scoreButtonC.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new ScoreScreen(game));
+                game.setScreen(new ScoreScreen(game, assetLoader));
                 return true;
             }
         });
@@ -150,7 +150,7 @@ public class MenuScreen implements Screen {
         helpButtonC.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new HelpScreen(game));
+                game.setScreen(new HelpScreen(game, assetLoader));
                 return true;
             }
         });
@@ -160,7 +160,7 @@ public class MenuScreen implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 label.setText("ACIDIC 2D");
 
-                game.setScreen(new CreditsScreen(game));
+                game.setScreen(new CreditsScreen(game, assetLoader));
                 return true;
             }
         });

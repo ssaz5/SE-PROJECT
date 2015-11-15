@@ -40,6 +40,7 @@ public class Object {
     float actualHeight;
 
     public Body body;
+    FixtureDef fixtureDef;
 
 
     public Object(){
@@ -135,17 +136,19 @@ public class Object {
     }
 
 
-    public Body setBodyStatic(World world, float density){
+public Body setBodyStatic(World world, float density)                    {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(rect.x,rect.y);
+        bodyDef.position.set(rect.x, rect.y);
 
         body = world.createBody(bodyDef);
 
         PolygonShape sShape = new PolygonShape();
         sShape.setAsBox(rect.width/2, rect.height/2, new Vector2(0,0), 0);
+        fixtureDef = new FixtureDef();
+        fixtureDef.density = density;
 
 
-        body.createFixture(sShape, density);
+        body.createFixture(sShape,fixtureDef.density);
         sShape.dispose();
 
         body.setUserData(this);
@@ -162,7 +165,7 @@ public class Object {
 
         PolygonShape dShape = new PolygonShape();
         dShape.setAsBox(rect.width/2, rect.height/2, new Vector2(0,0),0);
-        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef = new FixtureDef();
         fixtureDef.shape = dShape;
         fixtureDef.friction = friction;
         fixtureDef.restitution = restitution;
@@ -178,6 +181,51 @@ public class Object {
 
 
     }
+
+    public Body setBodyDynamic(World world){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(rect.x,rect.y);
+
+        body = world.createBody(bodyDef);
+
+        PolygonShape dShape = new PolygonShape();
+        dShape.setAsBox(rect.width/2, rect.height/2, new Vector2(0,0),0);
+
+        fixtureDef.shape = dShape;
+
+
+        Fixture fixture = body.createFixture(fixtureDef);
+
+        dShape.dispose();
+
+        body.setUserData(this);
+
+        return body;
+
+    }
+
+    public  Body setBodyStatic(World world){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.position.set(rect.x,rect.y);
+
+        body = world.createBody(bodyDef);
+
+        PolygonShape sShape = new PolygonShape();
+        sShape.setAsBox(rect.width/2, rect.height/2, new Vector2(0,0), 0);
+
+        fixtureDef.shape = sShape;
+
+        body.createFixture(sShape,fixtureDef.density);
+        sShape.dispose();
+
+        body.setUserData(this);
+
+
+        return body;
+    }
+
+
 
 }
 
