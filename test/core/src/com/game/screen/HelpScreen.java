@@ -14,12 +14,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-<<<<<<< HEAD
+//<<<<<<< HEAD
 import com.objects.AssetLoader;
-=======
+//=======
 import com.objects.*;
 import com.objects.Object;
->>>>>>> origin/master
+//>>>>>>> origin/master
 
 /**
  * Created by programmercore on 11/11/15.
@@ -73,16 +73,16 @@ public class HelpScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-<<<<<<< HEAD
+//<<<<<<< HEAD
         if(Gdx.input.isTouched())
             game.setScreen(new MenuScreen(game, assetLoader));
-=======
+//=======
     //    if(Gdx.input.isTouched())
     //        game.setScreen(new MenuScreen(game));
 
 
         batch.begin();
->>>>>>> origin/master
+//>>>>>>> origin/master
 
         background.draw(batch);
         batch.end();
