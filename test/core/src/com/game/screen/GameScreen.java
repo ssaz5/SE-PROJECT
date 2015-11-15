@@ -57,7 +57,7 @@ public class GameScreen implements Screen{
 
     BitmapFont font;
 
-    Cat testCat;
+
     Array<Cat> Katz;
 
     Array<Shot> shots;
@@ -113,8 +113,6 @@ public class GameScreen implements Screen{
       //  canon.body.setTransform(canon.body.getPosition(),canon.body.getAngle()+0.7854f);
 
 
-        testCat = new Cat("cat/SpaceShipCat.png","cat/SpaceShipCatFall.png",1,3,1,2,20,8,1.3f,2f);
-        testCat.setBodyStatic(world, 0.5f);
 
         stage = new Stage();
         font = new BitmapFont(Gdx.files.internal("Fonts/PoorRichard.fnt"),false);
@@ -140,32 +138,25 @@ public class GameScreen implements Screen{
 
         AcidButton.buttonContainer.addListener(new InputListener() {
             @Override
-<<<<<<< HEAD
             public boolean  touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Shot shot = canon.fire(world, ShotType.PoisonShot, assetLoader);
                 if(shot != null) {
                     shots.add(shot);
                 }
                 return true;
-=======
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                shots.add(canon.fire(world, ShotType.AcidShot, assetLoader));
-                return false;
->>>>>>> origin/master
             }
+
+
         });
+
         PoisonButton.buttonContainer.addListener(new InputListener() {
             @Override
-<<<<<<< HEAD
+
             public boolean  touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Shot shot = canon.fire(world, ShotType.PoisonShot, assetLoader);
-                if(shot != null) {
+                if (shot != null) {
                     shots.add(shot);
                 }
-=======
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                shots.add(canon.fire(world, ShotType.PoisonShot, assetLoader));
->>>>>>> origin/master
                 return true;
             }
         });
@@ -193,9 +184,7 @@ public class GameScreen implements Screen{
 
         time +=Gdx.graphics.getDeltaTime();
 
-        if (time >15f && !testCat.isFalling){
-            testCat.setFalling();
-        }
+
 
 
         if (camera.position.x <2950 && start == true){
@@ -229,17 +218,21 @@ public class GameScreen implements Screen{
         }
 
         //Checks whether to spawn a cat or not
-        if(TimeUtils.nanoTime() - lastSpawnTime > 1000000000) {
+        if(time >4f) {
             if (randInt(0, 1) > 0) {
-                Cat cat = new Cat(CatType.SpaceShipCat,1,3,1,2,23f,(float)randInt(3,14),3,2,assetLoader);
+                Cat cat = new Cat(CatType.SpaceShipCat,1,3,1,2,25f,(float)randInt(3,14),2,3,assetLoader);
                 cat.setBodyStatic(world,0.5f);
                 Katz.add(cat);
             } else {
-                Cat cat = new Cat(CatType.BushCat,1,3,1,2,23f,(float)randInt(3,14),3,2,assetLoader);
+                Cat cat = new Cat(CatType.BushCat,1,3,1,2,25f,(float)randInt(3,14),2,3,assetLoader);
                 cat.setBodyStatic(world,0.5f);
                 Katz.add(cat);
             }
+            time = 0;
         }
+
+
+
 
 
         sb.begin();
@@ -249,10 +242,14 @@ public class GameScreen implements Screen{
         wall.draw(sb);
         ground.draw(sb);
         canon.draw(sb);
-        testCat.draw(sb);
+
 
         for (Shot shot : shots){
             shot.draw(sb);
+        }
+        for (Cat cat : Katz){
+            cat.draw(sb);
+            cat.body.setTransform(cat.body.getPosition().x - 0.1f,cat.body.getPosition().y,cat.body.getAngle());
         }
 
 
