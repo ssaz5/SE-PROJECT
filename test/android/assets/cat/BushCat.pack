@@ -1,0 +1,26 @@
+
+BushCat.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Cat3
+  rotate: false
+  xy: 0, 0
+  size: 516, 852
+  orig: 516, 852
+  offset: 0, 1
+  index: -1
+Cat2
+  rotate: false
+  xy: 516, 0
+  size: 516, 852
+  orig: 516, 852
+  offset: 10, 1
+  index: -1
+Cat1
+  rotate: false
+  xy: 1032, 0
+  size: 516, 852
+  orig: 516, 852
+  offset: 0, 1
+  index: -1

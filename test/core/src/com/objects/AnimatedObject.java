@@ -22,6 +22,8 @@ public class AnimatedObject extends Object {
 
     float stateTime;
 
+    public AnimatedObject(){};
+
     public AnimatedObject(String fileLoc, int row, int col, float x, float y, float width, float height ){
 
         body = null;

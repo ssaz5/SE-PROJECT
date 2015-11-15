@@ -1,0 +1,26 @@
+
+SpaceShipCat.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+SpaceShipCat1
+  rotate: false
+  xy: 0, 0
+  size: 516, 832
+  orig: 516, 832
+  offset: 0, 0
+  index: -1
+SpaceShipCat2
+  rotate: false
+  xy: 516, 0
+  size: 516, 832
+  orig: 516, 832
+  offset: 0, 0
+  index: -1
+SpaceShipCat3
+  rotate: false
+  xy: 1032, 0
+  size: 516, 832
+  orig: 516, 832
+  offset: 0, 0
+  index: -1

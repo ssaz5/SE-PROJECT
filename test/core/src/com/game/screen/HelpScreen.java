@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.objects.AssetLoader;
 
 /**
  * Created by programmercore on 11/11/15.
@@ -19,8 +20,11 @@ public class HelpScreen implements Screen {
     Texture img;
     Stage stage;
 
-    public HelpScreen(Game game){
+    AssetLoader assetLoader;
+
+    public HelpScreen(Game game, AssetLoader assetLoader){
         this.game = game;
+        this.assetLoader = assetLoader;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class HelpScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if(Gdx.input.isTouched())
-            game.setScreen(new HelpScreen1(game));
+            game.setScreen(new MenuScreen(game, assetLoader));
 
         stage.draw();
     }

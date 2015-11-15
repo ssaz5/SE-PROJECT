@@ -1,0 +1,19 @@
+
+BushCatFall.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+CatFall1
+  rotate: false
+  xy: 0, 0
+  size: 775, 653
+  orig: 775, 653
+  offset: 0, 0
+  index: -1
+CatFall2
+  rotate: false
+  xy: 775, 0
+  size: 775, 653
+  orig: 775, 653
+  offset: 0, 0
+  index: -1
