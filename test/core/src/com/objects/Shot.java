@@ -83,7 +83,7 @@ public class Shot extends Object {
         currentFrame = textureRegion[0];
 
         body = null;
-        setBodyDynamic(world,0.5f,0.5f,0.1f);
+        setBodyDynamic(world,0.1f,0.5f,0.1f);
         
         body.setTransform(body.getPosition(), MathUtils.degreesToRadians*rotation);
 

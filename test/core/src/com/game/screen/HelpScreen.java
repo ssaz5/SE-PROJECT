@@ -33,7 +33,7 @@ public class HelpScreen implements Screen {
     OrthographicCamera camera;
     com.objects.Object background;
 
-    AssetLoader assetLoader;
+    public AssetLoader assetLoader;
 
     public HelpScreen(Game game, AssetLoader assetLoader){
         this.game = game;
@@ -60,12 +60,12 @@ public class HelpScreen implements Screen {
         Image image = new Image(imgRegion);
         stage.addActor(image);
 */
-        ScreenGestureProcessor listener = new ScreenGestureProcessor();
-        listener.setCamera(camera);
-        InputMultiplexer multiplexer = new InputMultiplexer();
-        //multiplexer.addProcessor(stage);
-        multiplexer.addProcessor(new GestureDetector(listener));
-        Gdx.input.setInputProcessor(multiplexer);
+        ScreenGestureProcessor gestureProcessor = new ScreenGestureProcessor();
+        gestureProcessor.setCamera(camera);
+        gestureProcessor.setAssetLoader(assetLoader);
+        gestureProcessor.setGame(game);
+        gestureProcessor.setSpriteBatch(batch);
+        Gdx.input.setInputProcessor(new GestureDetector(gestureProcessor));
 
     }
 
@@ -74,8 +74,7 @@ public class HelpScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //<<<<<<< HEAD
-        if(Gdx.input.isTouched())
-            game.setScreen(new MenuScreen(game, assetLoader));
+
 //=======
     //    if(Gdx.input.isTouched())
     //        game.setScreen(new MenuScreen(game));

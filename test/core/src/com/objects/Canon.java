@@ -5,7 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
@@ -14,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 public class Canon extends Object {
 
     int fuel;
+    int shotcount=0;
 
     public Canon(String fileLoc, int row, int col, float x, float y , float width, float height){
         fuel = 4;
@@ -76,7 +79,9 @@ public class Canon extends Object {
     }
 
     public void increaseFuel(){
+        if (fuel < 4){
         fuel++;
+        }
     }
     public void decreaseFuel(){
         fuel--;
@@ -89,9 +94,21 @@ public class Canon extends Object {
 
     public Shot fire(World world, ShotType type, AssetLoader assetLoader){
         //Generate a shot
-        Shot shot = new Shot(type, rect.x + rect.width/2 + 0.5f, rect.y+rect.height/2 +0.5f,1,1, rotation,world,assetLoader);
+        if (fuel >0) {
+            Shot shot = new Shot(type, rect.x + (rect.width / 2) * MathUtils.cos(body.getAngle()), rect.y + (rect.width / 2) * MathUtils.sin(body.getAngle()) + 0.5f, 1, 1, rotation, world, assetLoader);
+            shot.body.applyLinearImpulse(1.5f * MathUtils.cos(shot.body.getAngle()),
+                    1.5f * MathUtils.sin(shot.body.getAngle()),
+                    shot.body.getWorldPoint(new Vector2(0f, 0f)).x, shot.body.getWorldCenter().y
+                    , true);
+            shotcount++;
+            if (shotcount == 4) {
+                decreaseFuel();
+                shotcount = 0;
+            }
+            return shot;
+        }
+        return null;
 
-        return shot;
     }
 
     @Override

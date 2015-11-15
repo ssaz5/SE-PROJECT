@@ -50,7 +50,7 @@ public class MenuScreen implements Screen {
     Container scoreButtonC;
     Container creditsButtonC;
 
-    AssetLoader assetLoader;
+    public AssetLoader assetLoader;
 
     public MenuScreen(Game game, AssetLoader assetLoader){  this.game = game; this.assetLoader = assetLoader;   }
 

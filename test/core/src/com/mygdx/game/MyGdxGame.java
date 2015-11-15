@@ -10,7 +10,7 @@ import com.objects.AssetLoader;
 public class MyGdxGame extends Game {
 
 	Game game;
-	AssetLoader assetLoader;
+	public AssetLoader assetLoader;
 
 
 
@@ -26,6 +26,9 @@ public class MyGdxGame extends Game {
 
 
 
+	public com.objects.AssetLoader getAssetLoader() {
+		return assetLoader;
+	}
 
 	@Override
 	public void render () {

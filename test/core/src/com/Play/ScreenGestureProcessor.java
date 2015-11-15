@@ -1,9 +1,14 @@
 package com.Play;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.game.screen.MenuScreen;
+import com.objects.AssetLoader;
 
 /**
  * Created by programmercore on 11/15/15.
@@ -11,10 +16,21 @@ import com.badlogic.gdx.math.Vector2;
 public class ScreenGestureProcessor implements GestureDetector.GestureListener{
 
     OrthographicCamera camera;
+    Game game;
+    AssetLoader assetLoader;
+    SpriteBatch spriteBatch;
+
+    public void setGame(Game game){this.game = game;}
 
     public void setCamera(OrthographicCamera camera){
         this.camera = camera;
     }
+
+    public void setAssetLoader(AssetLoader assetLoader){
+        this.assetLoader = assetLoader;
+    }
+
+    public void setSpriteBatch(SpriteBatch spriteBatch){this.spriteBatch = spriteBatch;}
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
@@ -28,6 +44,9 @@ public class ScreenGestureProcessor implements GestureDetector.GestureListener{
 
     @Override
     public boolean longPress(float x, float y) {
+
+        game.setScreen(new MenuScreen(game,assetLoader));
+
         return false;
     }
 
@@ -38,13 +57,19 @@ public class ScreenGestureProcessor implements GestureDetector.GestureListener{
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        if (deltaY < 0) {
-            camera.position.set(Gdx.graphics.getWidth() + 0.01f, Gdx.graphics.getHeight(), 0);
-        }
-        if (deltaY > 0){
-            camera.position.set(Gdx.graphics.getWidth() - 0.01f, Gdx.graphics.getHeight(), 0);
-        }
 
+        if (camera.position.x <3750){
+            if (deltaX < 0) {
+                camera.translate(50, 0);
+            }
+        }
+        if (camera.position.x > 1250){
+            if (deltaX > 0) {
+                camera.translate(-50, 0);
+            }
+            camera.update();
+            spriteBatch.setProjectionMatrix(camera.combined);
+        }
         return false;
     }
 

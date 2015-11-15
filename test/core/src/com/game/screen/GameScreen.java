@@ -42,7 +42,7 @@ public class GameScreen implements Screen{
     OrthographicCamera camera2;
 
 
-    AssetLoader Assets;
+    public  AssetLoader Assets;
 
     SpriteBatch sb;
 
@@ -144,14 +144,20 @@ public class GameScreen implements Screen{
         AcidButton.buttonContainer.addListener(new InputListener(){
             @Override
             public boolean  touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                shots.add(canon.fire(world,ShotType.AcidShot, assetLoader));
-                return false;
+                Shot shot = canon.fire(world, ShotType.PoisonShot, assetLoader);
+                if(shot != null) {
+                    shots.add(shot);
+                }
+                return true;
             }
         });
         PoisonButton.buttonContainer.addListener(new InputListener(){
             @Override
             public boolean  touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                shots.add(canon.fire(world, ShotType.PoisonShot, assetLoader));
+                Shot shot = canon.fire(world, ShotType.PoisonShot, assetLoader);
+                if(shot != null) {
+                    shots.add(shot);
+                }
                 return true;
             }
         });

@@ -31,12 +31,11 @@ public class ScoreScreen implements Screen {
     Container labelContainer;
     Label.LabelStyle labelstyle;
     BitmapFont font;
-    AssetLoader Assets;
     TextureAtlas buttonatlas;
     TextButton.TextButtonStyle buttonstyle;
     Skin buttonSkin;
 
-    AssetLoader assetLoader;
+    public AssetLoader assetLoader;
 
     public ScoreScreen(Game game, AssetLoader assetLoader){
         this.game = game;

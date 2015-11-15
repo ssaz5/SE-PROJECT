@@ -1,7 +1,9 @@
 package com.Play;
 
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.objects.Canon;
 import com.objects.Object;
 
 /**
@@ -9,9 +11,9 @@ import com.objects.Object;
  */
 public class GestureProcessor implements GestureDetector.GestureListener {
 
-    Object object;
+    Canon object;
 
-    public void setObject(Object object){
+    public void setObject(Canon object){
         this.object = object;
     }
 
@@ -22,6 +24,9 @@ public class GestureProcessor implements GestureDetector.GestureListener {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
+        if (count >1){
+            object.increaseFuel();
+        }
         return false;
     }
 
@@ -38,11 +43,17 @@ public class GestureProcessor implements GestureDetector.GestureListener {
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         if (x > (object.rect.x-object.rect.width/2)*100 && x <(object.rect.x + object.rect.width/2)*100) {
-            if (deltaY < 0 && object.body.getAngle()<1.5708f) {
+            if (deltaY < 0 && object.body.getAngle()< Math.PI/2) {
                 object.body.setTransform(object.body.getPosition(),object.body.getAngle()+0.1f);
+            }
+            else if (object.body.getAngle()> Math.PI){
+                object.body.setTransform(object.body.getPosition(),(float) (Math.PI/2)-0.3f);
             }
             if (deltaY > 0 && object.body.getAngle()>0){
                 object.body.setTransform(object.body.getPosition(),object.body.getAngle()-0.1f);
+            }
+            else if (object.body.getAngle()< 0){
+                object.body.setTransform(object.body.getPosition(),0);
             }
         }
 
