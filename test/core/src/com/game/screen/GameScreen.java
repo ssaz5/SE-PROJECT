@@ -34,7 +34,6 @@ public class GameScreen implements Screen{
     int count;
     Game game;
     World world;
-
     Box2DDebugRenderer renderer;
     OrthographicCamera camera;
     OrthographicCamera camera2;
