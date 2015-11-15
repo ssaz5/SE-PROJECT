@@ -1,16 +1,14 @@
 package com.game.screen;
 
+import com.Enums.CatType;
 import com.Play.GestureProcessor;
 import com.acidic.ui.Button;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
@@ -23,10 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.objects.*;
 import com.objects.Object;
 import com.Enums.ShotType;
+import java.util.Random;
 
 /**
  * Created by Suleman on 11/8/2015.
@@ -40,7 +39,7 @@ public class GameScreen implements Screen{
     Box2DDebugRenderer renderer;
     OrthographicCamera camera;
     OrthographicCamera camera2;
-
+    private long lastSpawnTime;
 
     AssetLoader Assets;
 
@@ -59,9 +58,9 @@ public class GameScreen implements Screen{
     BitmapFont font;
 
     Cat testCat;
+    Array<Cat> Katz;
 
     Array<Shot> shots;
-
 
     float time = 0;
 
@@ -88,7 +87,7 @@ public class GameScreen implements Screen{
         camera2.position.set(12.50f, 7f, 0);
         camera2.update();
         sb = new SpriteBatch();
-
+        Random randomGenerator = new Random();
 
         sb.setProjectionMatrix(camera.combined);
 
@@ -105,7 +104,7 @@ public class GameScreen implements Screen{
 
 
         ground = new Object("wall.png",1,1,12.5f,-0.0f,25f,0.02f);
-        ground.setBodyStatic(world,0.5f);
+        ground.setBodyStatic(world, 0.5f);
 
         Background = new Object("Main screen/MainScreen2.jpg",1,1,11f,7f,62f,14f);
 
@@ -116,8 +115,6 @@ public class GameScreen implements Screen{
 
         testCat = new Cat("cat/SpaceShipCat.png","cat/SpaceShipCatFall.png",1,3,1,2,20,8,1.3f,2f);
         testCat.setBodyStatic(world, 0.5f);
-
-
 
         stage = new Stage();
         font = new BitmapFont(Gdx.files.internal("Fonts/PoorRichard.fnt"),false);
@@ -141,24 +138,35 @@ public class GameScreen implements Screen{
 
         shots = new Array<Shot>();
 
-        AcidButton.buttonContainer.addListener(new InputListener(){
+        AcidButton.buttonContainer.addListener(new InputListener() {
             @Override
-            public boolean  touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                shots.add(canon.fire(world,ShotType.AcidShot, assetLoader));
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                shots.add(canon.fire(world, ShotType.AcidShot, assetLoader));
                 return false;
             }
         });
-        PoisonButton.buttonContainer.addListener(new InputListener(){
+        PoisonButton.buttonContainer.addListener(new InputListener() {
             @Override
-            public boolean  touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 shots.add(canon.fire(world, ShotType.PoisonShot, assetLoader));
                 return true;
             }
         });
 
+        Katz = new Array<Cat>();
 
+    }
 
+    public static int randInt(int min, int max) {
 
+        // Usually this can be a field rather than a method variable
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
     }
 
     @Override
@@ -203,10 +211,18 @@ public class GameScreen implements Screen{
 
         }
 
-
-
-
-
+        //Checks whether to spawn a cat or not
+        if(TimeUtils.nanoTime() - lastSpawnTime > 1000000000) {
+            if (randInt(0, 1) > 0) {
+                Cat cat = new Cat(CatType.SpaceShipCat,1,3,1,2,23f,(float)randInt(3,14),3,2,assetLoader);
+                cat.setBodyStatic(world,0.5f);
+                Katz.add(cat);
+            } else {
+                Cat cat = new Cat(CatType.BushCat,1,3,1,2,23f,(float)randInt(3,14),3,2,assetLoader);
+                cat.setBodyStatic(world,0.5f);
+                Katz.add(cat);
+            }
+        }
 
 
         sb.begin();
